@@ -1,0 +1,89 @@
+﻿INSERT INTO Month (name) VALUES 
+	(  '一月'), 
+	(  '二月'),
+	(  '三月'),
+	(  '四月'),
+	(  '五月'),
+	(  '六月'),
+	(  '七月'),
+	(  '八月'),
+	(  '九月'),
+	(  '十月'),
+	(  '十一月'),
+	(  '十二月');
+	
+INSERT INTO Members (password, phone) VALUES ('6520e60ff6a01005dacf7ae1fcb0d8fe', 'admin');
+INSERT INTO Members (password, phone) VALUES ('8a92d97066294c86d37ad7d25751e17b', '0912345678');
+
+CREATE TABLE CartNo (
+  KEY_DATE NVARCHAR(16) NOT NULL,
+  CONSTRAINT PK_KEY_DATE primary key (KEY_DATE),
+  SERNO INT NOT NULL
+  )
+
+USE ShoppingMall
+
+INSERT INTO Store(name, area, address, phone)
+VALUES
+('北一', '北部', '新北市汐止區福德一路97號', '02-26471234'),
+('北二', '北部', '新北市板橋區中正路332之6號1樓', '02-29652345'),
+('北三', '北部', '台北市南港區玉成街143號1樓', '02-27863456'),
+('北四', '北部', '台北市士林區劍潭路25號1樓', '02-28834567'),
+('北五', '北部', '新北市汐止區福德一路86巷180號', '02-98765432'),
+('中一', '中部', '台中市大里區中興路一段255號', '04-24965678'),
+('中二', '中部', '台中市大里區東昇里新仁路二段88號', '04-24837894'),
+('中三', '中部', '彰化縣鹿港鎮頭崙里7鄰頂草路二段196號', '04-7714568'),
+('中四', '中部', '彰化縣北斗鎮中正路23號1樓', '04-8878523'),
+('中五', '中部', '南投縣信義鄉同和巷28號', '049-2702941'),
+('南一', '南部', '台南市永康區大灣路123號', '06-2737852'),
+('南二', '南部', '台南市永康區尚頂里23鄰南台街8號1樓', '06-2439631'),
+('南三', '南部', '高雄市鳳山區埤頂里建國路一段1號1樓', '07-7021234'),
+('南四', '南部', '高雄市梓官區智蚵里中正路258號', '07-6108956'),
+('南五', '南部', '高雄市美濃區泰安里泰安路59號', '07-6811294'),
+('東一', '東部', '花蓮縣花蓮市中正路88號1樓2樓', '03-8347915'),
+('東二', '東部', '花蓮縣鳳林鎮信義路100號1樓', '03-8764321'),
+('東三', '東部', '台東縣成功鎮三民里大同路8號', '089-59832'),
+('東四', '東部', '台東縣卑南鄉溫泉路883號', '089-511561'),
+('東五', '東部', '台東縣蘭嶼鄉東清村東清路7號', '089-732917')
+
+CREATE TABLE ordermain (
+  orderNo NVARCHAR(50) NOT NULL,
+  CONSTRAINT PK_orderNo primary key (orderNo),
+  memberNo NVARCHAR(50) NOT NULL,
+  recipient NVARCHAR(50) NOT NULL,  	  -- 收件人
+  email NVARCHAR(100) NOT NULL,
+  phoneNumber NVARCHAR(50) NOT NULL,
+  paymentMethod NVARCHAR(10) NOT NULL,    -- 01 for 信用卡, 02 for 轉帳, 03 for 貨到付款
+  paymentStatus NVARCHAR(10) NOT NULL,    -- 01 for 已付款, 02 for 未付款
+  orderTotal money NOT NULL,
+  orderTime DATETIME NOT NULL,
+  ShoppingEventId INT,
+  DiscountEventId INT,
+  FreeBieEventId INT,
+  shippingNo NVARCHAR(50),
+  orderCancel INT NOT NULL,               -- 1 for 存活, 2 for 已取消'
+  )
+  
+CREATE TABLE orderitem (
+  orderItemId INT NOT NULL,
+  orderNo NVARCHAR(50) NOT NULL,
+  CONSTRAINT PK_orderNo_orderItemId primary key (orderNo,orderItemId),
+  productNo INT NOT NULL,                 -- 參考BookBean的bookId
+  productName NVARCHAR(100) NOT NULL ,
+  productPriceAtTheTime money NOT NULL ,
+  productQuantity INT NOT NULL,
+  CONSTRAINT FK_orderitem_orderNo FOREIGN KEY (orderNo)
+    REFERENCES ordermain (orderNo),
+	)
+
+
+CREATE TABLE shippingdata (
+  orderNo NVARCHAR(50) NOT NULL,
+  changeTime DATETIME NOT NULL,     -- 同訂單, 第一次與訂購時間一樣, 第二次則以當時修改時間為主
+  CONSTRAINT PK_orderNo_changeTime primary key (orderNo,changeTime),
+  address NVARCHAR(50) NOT NULL,
+  shippingMethod NVARCHAR(10) NOT NULL,      -- 01 for 宅配到家, 02 for 到店取貨
+  shippingStatus NVARCHAR(10) NULL,         -- null for 尚未發貨, 01 for 節點1, 02 for 節點2, 03 for 已送達地點, 目前設定如左
+  orderNo_sort INT,                  -- 1 for 未修改, 2 for 修改1次, 3 for 修改2次, 最多修改2次
+  CONSTRAINT FK_orderNo_shippingata FOREIGN KEY (orderNo) REFERENCES ordermain (orderNo)
+  )

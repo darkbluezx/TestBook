@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context displayName="EEITProject" docBase="EEITProject"
+	path="dmoe" reloadable="true">
+
+	<Resource name="jdbc/BookDataMsSQL" type="javax.sql.DataSource" 
+		username="sa" password="sa123456"
+		driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+		url="jdbc:sqlserver://127.0.0.1:1433;DatabaseName=shoppingmall" maxTotal="8"
+		maxIdle="4" maxWaitMillis="5000" />
+
+	<Resource name="jdbc/BookDataMySQL" type="javax.sql.DataSource" 
+		username="admin123" password="aabb1234"
+		driverClassName="com.mysql.cj.jdbc.Driver"
+		url="jdbc:mysql://127.0.0.1:3306/ShoppingMall?useUnicode=yes&amp;characterEncoding=utf8&amp;allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=Asia/Taipei"		
+		maxTotal="8"
+		maxIdle="4" maxWaitMillis="5000" />
+
+</Context>
